@@ -2,7 +2,7 @@ const { branch_schema, isError } = require('../shared/schema');
 const mongo = require('../shared/mongo');
 const fs = require('fs');
 const { files } = require('../shared/mongo');
-
+const path = require("path");
 
 module.exports = {
     async createBranch(req, res) {
@@ -46,10 +46,7 @@ module.exports = {
         let uploadFiles = [];
         try {
             console.log(req.id, req.body.branchId);
-            const dir = './uploads'
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir);
-              }
+            // console.log(dir);
             const branch = await mongo.branches.findOne({ _id: mongo.ObjectId(req.body.branchId) });
             if (!branch) {
                 const files = fs.readdirSync('./uploads');
@@ -62,13 +59,13 @@ module.exports = {
             console.log(`${branch.user} ${req.id} = ${!branch.user.equals(mongo.ObjectId(req.id))}`)
             console.log(`${repo.owner} ${req.id} =${!repo.owner.equals(mongo.ObjectId(req.id))}`)
             if (!branch.user.equals(mongo.ObjectId(req.id)) && !repo.owner.equals(mongo.ObjectId(req.id))) {
-                const files = fs.readdirSync('./uploads');
+                const files = fs.readdirSync(`./uploads`);
                 for (let i in files) {
                     fs.unlinkSync(`./uploads/${files[i]}`);
                 }
                 return res.status(403).json({ Message: "Unauthorized access" });
             }
-            const files = fs.readdirSync('./uploads');
+            const files = fs.readdirSync(`./uploads`);
             for (let i in files) {
                 let obj = {};
                 let file_type = files[i].split(".").pop();
@@ -86,7 +83,7 @@ module.exports = {
             res.status(200).json({ message: files });
         }
         catch (e) {
-            const files = fs.readdirSync('./uploads');
+            const files = fs.readdirSync(`./uploads`);
             for (let i in files) {
                 fs.unlinkSync(`./uploads/${files[i]}`);
             }

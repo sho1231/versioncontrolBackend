@@ -1,10 +1,14 @@
 const routes = require('express').Router();
 const { createBranch, uploadFile, getFiles, getBranch, getFile, deleteFile, getSelectiveBranch, deleteBranch, editFiles, getFilesForCommit, commitFiles } = require('../services/branches.services');
 const multer = require('multer');
+const fs = require('fs');
+
+
 
 var storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
+        fs.mkdirSync('./uploads', { recursive: true })
         cb(null, './uploads')
     },
     filename: (request, file, cb) => {
