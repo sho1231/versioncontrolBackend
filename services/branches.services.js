@@ -46,6 +46,10 @@ module.exports = {
         let uploadFiles = [];
         try {
             console.log(req.id, req.body.branchId);
+            const dir = './uploads'
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir);
+              }
             const branch = await mongo.branches.findOne({ _id: mongo.ObjectId(req.body.branchId) });
             if (!branch) {
                 const files = fs.readdirSync('./uploads');
