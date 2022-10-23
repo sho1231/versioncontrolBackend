@@ -17,7 +17,8 @@ dotenv.config();
         app.listen(process.env.PORT, () => console.log(`Listening in ${process.env.PORT}`));
         await mongo.connect();
         app.use(cors({
-            origin: "*"
+            origin: "*",
+            credentials:true
         }));
         app.use(express.urlencoded({ extended: true, limit: "100mb" }));
         app.use(express.json({ limit: "100mb" }));
